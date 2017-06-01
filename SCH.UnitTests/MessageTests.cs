@@ -9,17 +9,8 @@ using SCH.Host.IndexedObjects;
 namespace SCH.UnitTests
 {
     [TestClass]
-    public class UnitTest1
+    public class MessageTests
     {
-        [TestMethod]
-        public void ReadChannels()
-        {
-            var indexer = new Indexer(new Mock<IMyElasticClient>().Object,  "Resources/");
-
-            var channels = indexer.GetChannels("channels.txt");
-            Assert.AreEqual(2, channels.Length);
-        }
-
         [TestMethod]
         public void IndexChannel()
         {

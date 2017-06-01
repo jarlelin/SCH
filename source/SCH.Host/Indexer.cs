@@ -6,6 +6,7 @@ using System.Security.Authentication.ExtendedProtection;
 using Nest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using SCH.Host.IndexedObjects;
 using SCH.Host.IndexedObjects.SlackObjects;
 
@@ -15,13 +16,19 @@ namespace SCH.Host
     {
         private readonly string _sourceDataSmartebokaSlack;
         private readonly IMyElasticClient _elasticClient;
+        private JsonSerializerSettings _jsonSerializerSettings;
 
         public Indexer(IMyElasticClient elasticClient, string sourceDataSmartebokaSlack)
         {
             _sourceDataSmartebokaSlack = sourceDataSmartebokaSlack;
             _elasticClient = elasticClient ?? throw new ArgumentNullException(nameof(elasticClient));
+
+            _jsonSerializerSettings = new JsonSerializerSettings(){};
+            _jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            _jsonSerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
         }
-      
+
 
         public void Index()
         {
@@ -33,10 +40,19 @@ namespace SCH.Host
                 IndexChannel(channel);
             }
         }
+        public User[] GetUsers(string fileName = "users.json")
+        {
+            var usersFilePath = Path.Combine(_sourceDataSmartebokaSlack, fileName);
+
+            var objects = ReadArrayFromFile<User[]>(usersFilePath);
+
+            return objects;
+        }
 
         public Channel[] GetChannels(string fileName = "channels.json")
         {
-            var objects = ReadArrayFromFile<ChannelSlack[]>(_sourceDataSmartebokaSlack, fileName);
+            var channelFilePath = Path.Combine(_sourceDataSmartebokaSlack, fileName);
+            var objects = ReadArrayFromFile<ChannelSlack[]>(channelFilePath);
             var channels = objects.Select(c => new Channel(c)).ToArray();
             return channels;
         }
@@ -63,44 +79,21 @@ namespace SCH.Host
 
         public IEnumerable<Message> GetMessages(string filePath, string channel)
         {
-            var objets = ReadArrayFromFile<MessageSlack[]>(_sourceDataSmartebokaSlack, filePath);
+            var objets = ReadArrayFromFile<MessageSlack[]>(filePath);
             var messages = objets.Select(o => new Message(o, channel));
             return messages;
-            //using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            //using (var reader = new StreamReader(stream))
-            //{
-            //    var json = reader.ReadToEnd();
-            //    Console.WriteLine(json);
-
-            //    var jarray = JArray.Parse(json);
-            //    return CreateMessages(jarray, channel);
-            //}
+          
         }
 
-        //public static Message[] CreateMessages(JArray jarray, string channelName)
-        //{
-        //    var messages = jarray.Select(o => o.ToObject<Message>()).ToArray();
-        //    foreach (var message in messages)
-        //    {
-        //        var ts = message.Ts.Split('.')[0];
-        //        var timestamp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(ts));
-        //        message.TimeStamp = timestamp;
-        //        message.Channel = channelName;
-        //    }
-
-        //    return messages;
-        //}
-
-
-        private T ReadArrayFromFile<T>(string sourceDataPath, string fileName)
+        private T ReadArrayFromFile<T>(string fullFilePath)
         {
-            var path = Path.Combine(sourceDataPath, fileName);
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(fullFilePath, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
                 var json = reader.ReadToEnd();
                 //Console.WriteLine(json);
-                return JsonConvert.DeserializeObject<T>(json);
+
+                return JsonConvert.DeserializeObject<T>(json, _jsonSerializerSettings);
             }
         }
 
@@ -114,5 +107,21 @@ namespace SCH.Host
             Console.Write(message);
         }
 
+    }
+
+    public class User
+    {
+        [JsonProperty("team_id")]
+        public string TeamId;
+        [JsonProperty("real_name")]
+        public string RealName;
+        [JsonProperty("tz_offset")]
+        public int TzOffset;
+        [JsonProperty("is_bot")]
+        public bool IsBot;
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Color { get; set; }
+        public string Tz { get; set; }
     }
 }
