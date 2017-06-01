@@ -1,0 +1,68 @@
+﻿[
+    {
+        "id": "C0EC2J5T9",
+        "name": "evens-yndlingskanal",
+        "created": "1447318101",
+        "creator": "U0EBWMGG4",
+        "is_archived": false,
+        "is_general": false,
+        "members": [
+            "U0EBWMGG4",
+            "U0F1RB87L",
+            "U0F377V3J",
+            "U0F3P72QM",
+            "U0F6BAQ20",
+            "U0F6BGXMJ",
+            "U0F6DHYCV",
+            "U0F6E9S1Z",
+            "U0F6HD6AD",
+            "U0F9B18HW",
+            "U0LQB2KKL"
+        ],
+        "topic": {
+            "value": "Non-work banter and water cooler conversation",
+            "creator": "",
+            "last_set": "0"
+        },
+        "purpose": {
+            "value": "om \u00e5 kj\u00f8re en telemarksski opp i a nalen til Torgeir",
+            "creator": "U0F6HD6AD",
+            "last_set": "1455285387"
+        }
+    },
+    {
+        "id": "C0F6J1U02",
+        "name": "smartebol",
+        "created": "1448367821",
+        "creator": "U0F3P72QM",
+        "is_archived": true,
+        "is_general": false,
+        "members": [],
+        "pins": [
+            {
+                "id": "1481633880.000102",
+                "type": "C",
+                "user": "U0F6BGXMJ",
+                "owner": "U0F6BGXMJ",
+                "created": "1481640061"
+            },
+            {
+                "id": "F3CTGE7K2",
+                "type": "F",
+                "user": "U0F1MD599",
+                "owner": "U0F1RB87L",
+                "created": "1481556983"
+            }
+        ],
+        "topic": {
+            "value": "https:\/\/docs.google.com\/spreadsheets\/d\/1bAfjFXuOHDBq20purQbFPSwJIpNgK7knxY-GBpmBIZ8",
+            "creator": "U0F3P72QM",
+            "last_set": "1482309864"
+        },
+        "purpose": {
+            "value": "",
+            "creator": "",
+            "last_set": "0"
+        }
+    }
+]
